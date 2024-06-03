@@ -163,6 +163,32 @@ def add_task_view(request):
         form = TaskForm()
     return render(request, 'admin/add-task.html', {'form': form})
 
+#edit project
+@login_required
+def edit_project_view(request, pk):
+    if not request.user.is_superuser:
+        return redirect('home')
+    project = Project.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = EditProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('project-list')
+    else:
+        form = EditProjectForm(instance=project)
+    return render(request, 'admin/edit-project.html', {'form': form})
 
-        
-
+#edit task
+@login_required
+def edit_task_view(request, pk):
+    if not request.user.is_superuser:
+        return redirect('home')
+    task = Task.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = EditTaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('task-list')
+    else:
+        form = EditTaskForm(instance=task)
+    return render(request, 'admin/edit-task.html', {'form': form})

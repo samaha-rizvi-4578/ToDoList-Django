@@ -21,4 +21,5 @@ urlpatterns = [
     path('add-project/', add_project_view, name='add-project'),
     path('add-task/', add_task_view, name='add-task'),
     path('add-user/', add_user_view, name='add-user'),
+    path('edit-project/<int:pk>/', edit_project_view, name='edit-project'), 
 ]
