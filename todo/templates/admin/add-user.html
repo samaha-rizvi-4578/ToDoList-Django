@@ -1,0 +1,17 @@
+<!-- templates/admin/add-project.html -->
+{% extends "base.html" %}
+
+{% block title %}TODO LIST | Add User{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated and user.is_superuser %}
+    <h2>Add New User</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add User</button>
+    </form>
+{% else %}
+    <p>Kid You are not authorized to view this page.</p>
+{% endif %}
+{% endblock %}

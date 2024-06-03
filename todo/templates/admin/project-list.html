@@ -1,0 +1,83 @@
+<!-- templates/admin/project-list.html -->
+{% extends "base.html" %}
+
+{% block title %}TODO LIST | Projects{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <form id="search-form">
+        <div class="row">
+            <div class="search_field">
+                <input id="search-input" type="text" class="input-project-search" placeholder="Search" />
+                <button type="submit" class="search-project-page">Search</button>
+            </div>
+        </div>
+    </form>
+
+    {% if user.is_superuser %}
+        <p>Welcome, Admin {{ user.email }}!</p>
+        <p>As a superuser, you have access to all admin functionalities.</p>
+        <div class="row">
+            <div class="search-details-row" style="justify-content: space-between">
+                <button class="retrieve-all-button">Retrieve All projects</button>
+                <div class="total-records-indicator">Total: {{ projects.count }}</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>project Name</th>
+                        <th>Description</th>
+                      
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                        <tr>
+                            <td>{{ project.project_name }}</td>
+                            <td>{{ project.description }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Hi {{ user.email }}!</p>
+        <p>You are logged in as a regular user.</p>
+        <div class="row">
+            <div class="search-details-row" style="justify-content: space-between">
+                <button class="retrieve-all-button">Retrieve All projects</button>
+                <div class="total-records-indicator">Total: {{ projects.count }}</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>project Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                        <tr>
+                            <td>{{ project.project_name }}</td>
+                            <td>{{ project.description }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+    <p>You are not logged in.</p>
+    <a href="{% url 'login' %}">Log In</a> |
+    <a href="{% url 'signup' %}">Sign Up</a>
+{% endif %}
+
+
+{% endblock %}

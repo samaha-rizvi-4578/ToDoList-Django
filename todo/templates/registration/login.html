@@ -1,13 +1,22 @@
 <!-- templates/registration/login.html -->
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Log In{% endblock %}
+{% block title %}
+    TO DO LIST |Log In
+{% endblock %}
+
+{% block extra_header %}
+  <link rel="stylesheet" href="{% static 'registeration.css' %}" />
+{% endblock %}
 
 {% block content %}
+<div class="container">
 <h2>Log In</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Log In</button>
 </form>
+</div>  
 {% endblock %}

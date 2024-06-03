@@ -1,0 +1,151 @@
+<!-- templates/admin/task-list.html -->
+{% extends "base.html" %}
+
+{% block title %}TODO LIST | Tasks{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <form id="search-form">
+        <div class="row">
+            <div class="search_field">
+                <input id="search-input" type="text" class="input-task-search" placeholder="Search" />
+                <button type="submit" class="search-task-page">Search</button>
+            </div>
+        </div>
+    </form>
+
+    {% if user.is_superuser %}
+        <p>Welcome, Admin {{ user.email }}!</p>
+        <p>As a superuser, you have access to all admin functionalities.</p>
+        <div class="row">
+            <div class="search-details-row" style="justify-content: space-between">
+                <button class="retrieve-all-button">Retrieve All Tasks</button>
+                <div class="total-records-indicator">Total: {{ tasks.count }}</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Project Name</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.task_name }}</td>
+                            <td>{{ task.project_name.project_name }}</td>
+                            <td>{{ task.description }}</td>
+                            <td>
+                                <select class="priority-select" data-task-id="{{ task.id }}">
+                                    <option value="high" {% if task.priority == 'high' %}selected{% endif %}>High</option>
+                                    <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>Medium</option>
+                                    <option value="low" {% if task.priority == 'low' %}selected{% endif %}>Low</option>
+                                </select>
+                            </td>
+                            <td>{{ task.assigned_to.email }}</td>
+                            <td>
+                                <input type="checkbox" class="status-checkbox" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Hi {{ user.email }}!</p>
+        <p>You are logged in as a regular user.</p>
+        <div class="row">
+            <div class="search-details-row" style="justify-content: space-between">
+                <button class="retrieve-all-button">Retrieve All Tasks</button>
+                <div class="total-records-indicator">Total: {{ tasks.count }}</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Project Name</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                        <tr>
+                            <td>{{ task.task_name }}</td>
+                            <td>{{ task.project_name.project_name }}</td>
+                            <td>{{ task.description }}</td>
+                            <td>
+                                <select class="priority-select" data-task-id="{{ task.id }}">
+                                    <option value="high" {% if task.priority == 'high' %}selected{% endif %}>High</option>
+                                    <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>Medium</option>
+                                    <option value="low" {% if task.priority == 'low' %}selected{% endif %}>Low</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="checkbox" class="status-checkbox" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+    <p>You are not logged in.</p>
+    <a href="{% url 'login' %}">Log In</a> |
+    <a href="{% url 'signup' %}">Sign Up</a>
+{% endif %}
+
+<script>
+document.querySelectorAll('.priority-select').forEach(select => {
+    select.addEventListener('change', function() {
+        const taskId = this.dataset.taskId;
+        const priority = this.value;
+        fetch(`/api/task/${taskId}/update_priority/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({priority})
+        }).then(response => {
+            if (!response.ok) {
+                alert('Failed to update priority');
+            }
+        });
+    });
+});
+
+document.querySelectorAll('.status-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const taskId = this.dataset.taskId;
+        const completed = this.checked;
+        fetch(`/api/task/${taskId}/update_status/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({completed})
+        }).then(response => {
+            if (!response.ok) {
+                alert('Failed to update status');
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

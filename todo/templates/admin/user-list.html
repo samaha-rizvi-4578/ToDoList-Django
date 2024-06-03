@@ -1,15 +1,80 @@
-<!-- user_list.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>User List</title>
-</head>
-<body>
-    <h1>User List</h1>
-    <ul>
-        {% for user in object_list %}
-            <li>{{ user.username }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+<!-- templates/admin/user-list.html -->
+{% extends "base.html" %}
+
+{% block title %}TODO LIST | Users{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    {% if user.is_superuser %}
+        <p>Welcome, Admin {{ user.email }}!</p>
+        <p>As a superuser, you have access to all admin functionalities.</p>
+        <form id="search-form">
+            <div class="row">
+                <div class="search_field">
+                    <input id="search-input" type="text" class="input-user-search" placeholder="Search" />
+                    <button type="submit" class="search-user-page">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="search-details-row" style="justify-content: space-between">
+                <button class="retrieve-all-button">Retrieve All Users</button>
+                <div class="total-records-indicator">Total: {{ users.count }}</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <select class="status-select" data-user-id="{{ user.id }}">
+                                    <option value="True" {% if user.is_superuser %}selected{% endif %}>Admin</option>
+                                    <option value="False" {% if not user.is_superuser %}selected{% endif %}>Member</option>
+                                </select>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Hi {{ user.email }}!</p>
+        <p>Hey Kid you are not allowed to access this page.</p>
+    {% endif %}
+    <p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+    <p>You are not logged in.</p>
+    <a href="{% url 'login' %}">Log In</a> |
+    <a href="{% url 'signup' %}">Sign Up</a>
+{% endif %}
+
+<script>
+document.querySelectorAll('.status-select').forEach(select => {
+    select.addEventListener('change', function() {
+        const userId = this.dataset.userId;
+        const isSuperuser = this.value;
+        fetch(`/api/user/${userId}/update_status/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({is_superuser: isSuperuser})
+        }).then(response => {
+            if (!response.ok) {
+                alert('Failed to update user status');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
