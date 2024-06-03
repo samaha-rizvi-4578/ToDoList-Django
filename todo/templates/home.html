@@ -1,35 +1,25 @@
-<!-- templates/home.html -->
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Home{% endblock %}
 
-
 {% block content %}
-{% if user.is_authenticated %}
-  {% if user.is_superuser %}
-    <p>Welcome, Admin {{ user.email }}!</p>
-    <p>As a superuser, you have access to all admin functionalities.</p>
-    <nav>
-      <ul>
-        <li><a href="{% url 'project-list' %}">Project</a></li>
-        <li><a href="{% url 'task-list' %}">Task</a></li>
-        <li><a href="{% url 'user-list' %}">User</a></li>
-      </ul>
-    </nav>
-  {% else %}
-    <p>Hi {{ user.email }}!</p>
-    <p>You are logged in as a regular user.</p>
-    <nav>
-      <ul>
-        <li><a href="{% url 'project-list' %}">Project</a></li>
-        <li><a href="{% url 'task-list' %}">Task</a></li>
-      </ul> 
-    </nav>
-  {% endif %}
-  <p><a href="{% url 'logout' %}">Log Out</a></p>
-{% else %}
-  <p>You are not logged in.</p>
-  <a href="{% url 'login' %}">Log In</a> |
-  <a href="{% url 'signup' %}">Sign Up</a>
-{% endif %}
+<div class="container">
+    <div class="header">
+      <h1>Welcome, {{ user.email }}!</h1>
+      <a href="{% url 'logout' %}" class="logout-link">Log Out</a>
+    </div>
+    
+    <div class="navigation">
+      <nav>
+        <ul>
+          <li><a href="{% url 'project-list' %}">Project</a></li>
+          <li><a href="{% url 'task-list' %}">Task</a></li>
+          {% if user.is_superuser %}
+            <li><a href="{% url 'user-list' %}">User</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+
 {% endblock %}
