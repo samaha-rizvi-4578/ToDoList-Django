@@ -23,6 +23,9 @@
                 <div class="total-records-indicator">Total: {{ tasks.count }}</div>
             </div>
         </div>
+        <div class="row">
+            <a href="{% url 'add-task' %}" class="btn btn-primary">Add Task</a>
+        </div>
 
         <div class="table-container">
             <table class="table">
@@ -34,6 +37,7 @@
                         <th>Priority</th>
                         <th>Assigned To</th>
                         <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,6 +57,11 @@
                             <td>
                                 <input type="checkbox" class="status-checkbox" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
                             </td>
+                            <td>
+                                <a href="{% url 'edit-task' task.task_id %}" class="btn btn-primary">Edit Task</a>
+                            </td>
+                            
+
                         </tr>
                     {% endfor %}
                 </tbody>

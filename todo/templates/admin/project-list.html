@@ -23,13 +23,16 @@
                 <div class="total-records-indicator">Total: {{ projects.count }}</div>
             </div>
         </div>
-
+        <div class="row">
+            <a href="{% url 'add-project' %}" class="btn btn-primary">Add Project</a>
+        </div>
         <div class="table-container">
             <table class="table">
                 <thead>
                     <tr>
                         <th>project Name</th>
                         <th>Description</th>
+                        <th>Action</th>
                       
                     </tr>
                 </thead>
@@ -38,6 +41,7 @@
                         <tr>
                             <td>{{ project.project_name }}</td>
                             <td>{{ project.description }}</td>
+                            <td><a href="{% url 'edit-project' project.project_id %}" class="btn btn-primary">Edit Project</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

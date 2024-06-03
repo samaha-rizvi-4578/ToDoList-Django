@@ -18,8 +18,9 @@ urlpatterns = [
     path('users/', user_list, name='user-list'),
     path('api/user/<int:pk>/update_status/', update_user_status, name='update-user-status'),
     path('projects/', project_list, name='project-list'),
-    path('add-project/', add_project_view, name='add-project'),
-    path('add-task/', add_task_view, name='add-task'),
     path('add-user/', add_user_view, name='add-user'),
-    path('edit-project/<int:pk>/', edit_project_view, name='edit-project'), 
+    path('tasks/add/', add_task_view, name='add-task'),  # Add task URL
+    path('tasks/edit/<int:pk>/', edit_task_view, name='edit-task'), 
+    path('projects/add/', add_project_view, name='add-project'),  # Add project URL
+    path('projects/edit/<int:pk>/', edit_project_view, name='edit-project'), 
 ]
