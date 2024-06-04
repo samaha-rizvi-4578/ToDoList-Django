@@ -47,7 +47,7 @@
                             <td>{{ task.project_name.project_name }}</td>
                             <td>{{ task.description }}</td>
                             <td>
-                                <select class="priority-select" data-task-id="{{ task.id }}">
+                                <select class="priority-select" data-task-id="{{ task.task_id }}">
                                     <option value="high" {% if task.priority == 'high' %}selected{% endif %}>High</option>
                                     <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>Medium</option>
                                     <option value="low" {% if task.priority == 'low' %}selected{% endif %}>Low</option>
@@ -55,7 +55,7 @@
                             </td>
                             <td>{{ task.assigned_to.email }}</td>
                             <td>
-                                <input type="checkbox" class="status-checkbox" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
+                                <input type="checkbox" class="status-checkbox" data-task-id="{{ task.task_id }}" {% if task.completed %}checked{% endif %}>
                             </td>
                             <td>
                                 <a href="{% url 'edit-task' task.task_id %}" class="btn btn-primary">Edit Task</a>
@@ -95,7 +95,7 @@
                             <td>{{ task.project_name.project_name }}</td>
                             <td>{{ task.description }}</td>
                             <td>
-                                <select class="priority-select" data-task-id="{{ task.id }}">
+                                <select class="priority-select" data-task-id="{{ task.task_id }}">
                                     <option value="high" {% if task.priority == 'high' %}selected{% endif %}>High</option>
                                     <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>Medium</option>
                                     <option value="low" {% if task.priority == 'low' %}selected{% endif %}>Low</option>
@@ -120,7 +120,7 @@
 <script>
 document.querySelectorAll('.priority-select').forEach(select => {
     select.addEventListener('change', function() {
-        const taskId = this.dataset.taskId;
+        const taskId = this.dataset.taskId  ;
         const priority = this.value;
         fetch(`/api/task/${taskId}/update_priority/`, {
             method: 'POST',
