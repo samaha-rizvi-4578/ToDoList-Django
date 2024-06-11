@@ -20,7 +20,46 @@
         height: 100%;
         z-index: -1;
     }
+    .navbar {
+        width: 100%;
+        padding: 0;
+        background-color: #9775ca;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+    }
 
+    .navbar li {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar a {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        color: #fff;
+        margin: 0;
+        /* padding: 0; */
+        text-decoration: none;
+        background-color: #9775ca;
+        transition: background-color 0.3s;
+    }
+
+    .navbar a:hover {
+        background-color: #333;
+        color: #fff;
+        border: 1px solid #333;
+    }
+
+    .navbar li.active a {
+        background-color: #333;
+        color: #fff;
+    }
     .container {
         max-width: 800px;
         margin: 0 auto;
@@ -200,6 +239,14 @@
 
 {% block content %}
 <div id="vanta-container"></div>
+<div class="navbar">
+    <li><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
+    <li class="active"><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
+    {% if user.is_superuser %}
+    <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
+    {% endif %}
+    <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
+</div>
 <div class="container">
 {% if user.is_authenticated %}
     <div class="form-container">

@@ -1,9 +1,133 @@
-<!-- templates/admin/add-project.html -->
+<!-- templates/admin/add-user.html -->
 {% extends "base.html" %}
 
 {% block title %}TODO LIST | Add User{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Custom styles for the add user page */
+    body {
+        padding: 0;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    #vanta-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid #333;
+        z-index: 1;
+        position: relative;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    form p {
+        margin: 0;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #9775ca;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #442bff;
+    }
+
+    .logout {
+        text-align: center;
+        width: 25%;
+        color: #fff;
+        font-size: 14px;
+        background-color: #9775ca;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+        margin-left: 37.5%;
+        z-index: 1;
+        position: relative;
+    }
+    .logout:hover {
+        background-color: #442bff;
+    }
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Candal" />
+<script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.fog.min.js"></script>
+
+<!-- Include Vanta.js and initialize the fog effect -->
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+        VANTA.FOG({
+            el: "#vanta-container", // Replace with the ID of your container element
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            highlightColor: 0xf0f0f0,
+            midtoneColor: 0x9775ca,
+            lowlightColor: 0x442bff,
+            blurFactor: 0.57,
+            speed: 1.40,
+            zoom: 1.40
+        })
+    });
+</script>
+{% endblock %}
+
 {% block content %}
+<div id="vanta-container"></div>
+<div class="container">
 {% if user.is_authenticated and user.is_superuser %}
     <h2>Add New User</h2>
     <form method="post" novalidate>
@@ -11,7 +135,9 @@
         {{ form.as_p }}
         <button type="submit">Add User</button>
     </form>
+    <p><a href="{% url 'logout' %}" class="logout">Log Out</a></p>
 {% else %}
     <p>Kid You are not authorized to view this page.</p>
 {% endif %}
+</div>
 {% endblock %}

@@ -21,6 +21,46 @@
         height: 100%;
         z-index: -1;
     }
+    .navbar {
+        width: 100%;
+        padding: 0;
+        background-color: #9775ca;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+    }
+
+    .navbar li {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar a {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        color: #fff;
+        margin: 0;
+        /* padding: 0; */
+        text-decoration: none;
+        background-color: #9775ca;
+        transition: background-color 0.3s;
+    }
+
+    .navbar a:hover {
+        background-color: #333;
+        color: #fff;
+        border: 1px solid #333;
+    }
+
+    .navbar li.active a {
+        background-color: #333;
+        color: #fff;
+    }
 
     .container {
         max-width: 800px;
@@ -95,10 +135,13 @@
 
     .table-container {
         overflow-x: auto;
+        display: flex;
+        justify-content: center;
     }
 
     .table {
         width: 100%;
+        max-width: 800px;
         border-collapse: collapse;
         margin-top: 20px;
     }
@@ -137,18 +180,6 @@
 
     .btn-primary:hover {
         background-color: #442bff;
-    }
-
-    .priority-select {
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 5px;
-        background-color: #f5f5f5;
-    }
-
-    .status-checkbox {
-        width: 20px;
-        height: 20px;
     }
 
     .logout {
@@ -200,36 +231,38 @@
 {% endblock %}
 
 {% block content %}
-<div id="vanta-container"></div>
+<div id="vanta-container"></div><div class="navbar">
+    <li class="active"><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
+    <li><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
+    {% if user.is_superuser %}
+    <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
+    {% endif %}
+    <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
+</div>
+
 <div class="container">
 {% if user.is_authenticated %}
-    <form id="search-form">
-        <div class="row">
-            <div class="search_field">
-                <input id="search-input" type="text" class="input-search" placeholder="Search" />
-                <button type="submit" class="search-button">Search</button>
-            </div>
-        </div>
-    </form>
+    <div class="form-container">
+        <form id="search-form" class="search_field">
+            <input id="search-input" type="text" class="input-search" placeholder="Search" />
+            <button type="submit" class="search-button">Search</button>
+        </form>
+        <button class="retrieve-all-button">Retrieve All Projects</button>
+        <div class="total-records-indicator">Total: {{ projects.count }}</div>
+    </div>
 
     {% if user.is_superuser %}
         <div class="row">
-            <div class="search-details-row" style="justify-content: space-between">
-                <button class="retrieve-all-button">Retrieve All projects</button>
-                <div class="total-records-indicator">Total: {{ projects.count }}</div>
-            </div>
-        </div>
-        <div class="row">
             <a href="{% url 'add-project' %}" class="btn btn-primary">Add Project</a>
         </div>
+
         <div class="table-container">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>project Name</th>
+                        <th>Project Name</th>
                         <th>Description</th>
                         <th>Action</th>
-                      
                     </tr>
                 </thead>
                 <tbody>
@@ -244,18 +277,11 @@
             </table>
         </div>
     {% else %}
-        <div class="row">
-            <div class="search-details-row" style="justify-content: space-between">
-                <button class="retrieve-all-button">Retrieve All projects</button>
-                <div class="total-records-indicator">Total: {{ projects.count }}</div>
-            </div>
-        </div>
-
         <div class="table-container">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>project Name</th>
+                        <th>Project Name</th>
                         <th>Description</th>
                     </tr>
                 </thead>
@@ -270,12 +296,11 @@
             </table>
         </div>
     {% endif %}
-    <p><a href="{% url 'logout' %}">Log Out</a></p>
+    <p><a href="{% url 'logout' %}" class="logout">Log Out</a></p>
 {% else %}
     <p>You are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a> |
     <a href="{% url 'signup' %}">Sign Up</a>
 {% endif %}
-
 </div>
 {% endblock %}

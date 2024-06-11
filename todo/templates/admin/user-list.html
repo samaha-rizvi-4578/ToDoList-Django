@@ -21,10 +21,50 @@
         z-index: -1;
     }
 
+    .navbar {
+        width: 100%;
+        padding: 0;
+        background-color: #9775ca;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        z-index: 2;
+    }
+
+    .navbar li {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar a {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        color: #fff;
+        margin: 0;
+        /* padding: 0; */
+        text-decoration: none;
+        background-color: #9775ca;
+        transition: background-color 0.3s;
+    }
+
+    .navbar a:hover {
+        background-color: #333;
+        color: #fff;
+    }
+
+    .navbar li.active a {
+        background-color: #333;
+        color: #fff;
+        border: 1px solid #333;
+    }
+
     .container {
         max-width: 800px;
-        margin: 0 auto;
-        margin-top: 20px;
+        margin: 80px auto 20px auto;
         padding: 20px;
         background-color: #fff;
         border-radius: 8px;
@@ -93,14 +133,16 @@
     }
 
     .table-container {
+        width: 100%;
         overflow-x: auto;
-        align-items: center;
+        display: flex;
         justify-content: center;
     }
 
     .table {
         margin-left: 25%;
         width: 100%;
+        max-width: 800px;
         border-collapse: collapse;
         margin-top: 20px;
     }
@@ -170,10 +212,10 @@
         z-index: 1;
         position: relative;
     }
+
     .logout:hover {
         background-color: #442bff;
     }
-
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -202,6 +244,14 @@
 {% endblock %}
 {% block content %}
 <div id="vanta-container"></div>
+<div class="navbar">
+    <li><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
+    <li><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
+    {% if user.is_superuser %}
+    <li class="active"><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
+    {% endif %}
+    <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
+</div>
 <div class="container">
 {% if user.is_authenticated %}
     {% if user.is_superuser %}
@@ -241,7 +291,6 @@
         <p>Hi {{ user.email }}!</p>
         <p>Hey Kid you are not allowed to access this page.</p>
     {% endif %}
-    <p><a href="{% url 'logout' %}" class="logout">Log Out</a></p>
 {% else %}
     <p>You are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a> |
