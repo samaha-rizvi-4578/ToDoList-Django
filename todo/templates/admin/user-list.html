@@ -98,32 +98,36 @@
 
     .input-search {
         flex-grow: 1;
-        padding: 10px;
+        padding: 0 15px;
         border: 1px solid #ccc;
         border-radius: 5px;
         margin-right: 10px;
         height: 40px;
     }
 
-    .search-button,
-    .retrieve-all-button {
-        padding: 10px 15px;
+    .search-button{
+        padding: 0 15px;
+        /* Adjust padding to ensure the button's height matches the input's height */
         background-color: #9775ca;
         border: none;
         border-radius: 5px;
         color: #fff;
         cursor: pointer;
         transition: background-color 0.3s;
-        margin-right: 10px;
         height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Center the content inside the button */
     }
 
-    .search-button:hover,
-    .retrieve-all-button:hover {
-        background-color: #442bff;
+    .search-button:hover {
+        background-color: #333;
+        color: #fff;
     }
 
     .total-records-indicator {
+        padding: 0 15px;
         font-weight: bold;
         color: #333;
         margin-left: 10px;
@@ -131,6 +135,13 @@
         display: flex;
         align-items: center;
     }
+
+    /* Ensure the form container items are aligned */
+    #search-form {
+        display: flex;
+        align-items: center;
+    }
+
 
     .table-container {
         width: 100%;
@@ -147,7 +158,8 @@
         margin-top: 20px;
     }
 
-    .table th, .table td {
+    .table th,
+    .table td {
         padding: 12px;
         text-align: left;
         border-bottom: 1px solid #ddd;
@@ -180,7 +192,8 @@
     }
 
     .btn-primary:hover {
-        background-color: #442bff;
+        background-color: #333;
+        color: #fff;
     }
 
     .status-select {
@@ -214,7 +227,8 @@
     }
 
     .logout:hover {
-        background-color: #442bff;
+        background-color: #333;
+        color: #fff;
     }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -224,7 +238,7 @@
 
 <!-- Include Vanta.js and initialize the fog effect -->
 <script>
-   document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
         VANTA.FOG({
             el: "#vanta-container", // Replace with the ID of your container element
             mouseControls: true,
@@ -253,48 +267,50 @@
     <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
 </div>
 <div class="container">
-{% if user.is_authenticated %}
+    {% if user.is_authenticated %}
     {% if user.is_superuser %}
-        <div class="form-container">
-            <form id="search-form" class="search_field">
-                <input id="search-input" type="text" class="input-search" placeholder="Search" />
-                <button type="submit" class="search-button">Search</button>
-            </form>  
-            <div class="total-records-indicator">Total: {{ users.count }}</div>
-        </div>
+    <div class="form-container">
+        <form id="search-form" class="search_field">
+            <input id="search-input" type="text" class="input-search" placeholder="Search" />
+            <button id="search-button" type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+        <div class="total-records-indicator">Total: {{ users.count }}</div>
+    </div>
 
-        <div class="table-container">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                        <tr>
-                            <td>{{ user.email }}</td>
-                            <td>
-                                <select class="status-select" data-user-id="{{ user.id }}">
-                                    <option value="True" {% if user.is_superuser %}selected{% endif %}>Admin</option>
-                                    <option value="False" {% if not user.is_superuser %}selected{% endif %}>Member</option>
-                                </select>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <select class="status-select" data-user-id="{{ user.id }}">
+                            <option value="True" {% if user.is_superuser %}selected{% endif %}>Admin</option>
+                            <option value="False" {% if not user.is_superuser %}selected{% endif %}>Member</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
-        <p>Hi {{ user.email }}!</p>
-        <p>Hey Kid you are not allowed to access this page.</p>
+    <p>Hi {{ user.email }}!</p>
+    <p>Hey Kid you are not allowed to access this page.</p>
     {% endif %}
-{% else %}
+    {% else %}
     <p>You are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a> |
     <a href="{% url 'signup' %}">Sign Up</a>
-{% endif %}
+    {% endif %}
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -315,26 +331,26 @@
     });
 
     // Search User Functionality
-    document.getElementById('search-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const searchValue = document.getElementById('search-input').value;
-    console.log(`Searching for: ${searchValue}`);
+    document.getElementById('search-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const searchValue = document.getElementById('search-input').value;
+        console.log(`Searching for: ${searchValue}`);
 
-    fetch(`/todolist/api/user/search/?search_query=${searchValue}`)
-        .then(response => {
-            console.log(response);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-            const tableBody = document.querySelector('.table tbody');
-            tableBody.innerHTML = '';
-            data.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+        fetch(`/todolist/api/user/search/?search_query=${searchValue}`)
+            .then(response => {
+                console.log(response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                const tableBody = document.querySelector('.table tbody');
+                tableBody.innerHTML = '';
+                data.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                     <td>${user.email}</td>
                     <td>
                         <select class="status-select" data-user-id="${user.id}">
@@ -343,38 +359,38 @@
                         </select>
                     </td>
                 `;
-                tableBody.appendChild(row);
-            });
+                    tableBody.appendChild(row);
+                });
 
-            // Reattach event listeners for status update after search
-            document.querySelectorAll('.status-select').forEach(select => {
-                select.addEventListener('change', function() {
-                    const userId = this.dataset.userId;
-                    const isSuperuser = this.value;
-                    fetch(`/todolist/api/user/${userId}/update_status/`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: JSON.stringify({is_superuser: isSuperuser})
-                    }).then(response => {
-                        if (!response.ok) {
-                            alert('Failed to update user status');
-                        }
+                // Reattach event listeners for status update after search
+                document.querySelectorAll('.status-select').forEach(select => {
+                    select.addEventListener('change', function () {
+                        const userId = this.dataset.userId;
+                        const isSuperuser = this.value;
+                        fetch(`/todolist/api/user/${userId}/update_status/`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({ is_superuser: isSuperuser })
+                        }).then(response => {
+                            if (!response.ok) {
+                                alert('Failed to update user status');
+                            }
+                        });
                     });
                 });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while searching for users.');
             });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while searching for users.');
-        });
-});
+    });
 
     // Update User Status Functionality
     document.querySelectorAll('.status-select').forEach(select => {
-        select.addEventListener('change', function() {
+        select.addEventListener('change', function () {
             const userId = this.dataset.userId;
             const isSuperuser = this.value;
             fetch(`/todolist/api/user/${userId}/update_status/`, {
@@ -383,7 +399,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({is_superuser: isSuperuser})
+                body: JSON.stringify({ is_superuser: isSuperuser })
             }).then(response => {
                 if (!response.ok) {
                     alert('Failed to update user status');

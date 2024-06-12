@@ -4,7 +4,7 @@
 {% block title %}TODO LIST | Tasks{% endblock %}
 {% block extra_css %}
 <style>
-    /* Custom styles for the task list page */
+    /* Custom styles for the user list page */
     body {
         padding: 0;
         margin: 0;
@@ -20,6 +20,7 @@
         height: 100%;
         z-index: -1;
     }
+
     .navbar {
         width: 100%;
         padding: 0;
@@ -44,6 +45,7 @@
         border-radius: 0;
         color: #fff;
         margin: 0;
+        /* padding: 0; */
         text-decoration: none;
         background-color: #9775ca;
         transition: background-color 0.3s;
@@ -52,16 +54,17 @@
     .navbar a:hover {
         background-color: #333;
         color: #fff;
-        border: 1px solid #333;
     }
 
     .navbar li.active a {
-        background-color: #442bff;
+        background-color: #333;
+        color: #fff;
+        border: 1px solid #333;
     }
 
     .container {
         max-width: 800px;
-        margin: 80px auto 20px auto; /* Adjusted to accommodate the fixed navbar */
+        margin: 80px auto 20px auto;
         padding: 20px;
         background-color: #fff;
         border-radius: 8px;
@@ -95,32 +98,36 @@
 
     .input-search {
         flex-grow: 1;
-        padding: 10px;
+        padding: 0 15px;
         border: 1px solid #ccc;
         border-radius: 5px;
         margin-right: 10px;
         height: 40px;
     }
 
-    .search-button,
-    .retrieve-all-button {
-        padding: 10px 15px;
+    .search-button{
+        padding: 0 15px;
+        /* Adjust padding to ensure the button's height matches the input's height */
         background-color: #9775ca;
         border: none;
         border-radius: 5px;
         color: #fff;
         cursor: pointer;
         transition: background-color 0.3s;
-        margin-right: 10px;
         height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Center the content inside the button */
     }
 
-    .search-button:hover,
-    .retrieve-all-button:hover {
-        background-color: #442bff;
+    .search-button:hover {
+        background-color: #333;
+        color: #fff;
     }
 
     .total-records-indicator {
+        padding: 0 15px;
         font-weight: bold;
         color: #333;
         margin-left: 10px;
@@ -129,17 +136,29 @@
         align-items: center;
     }
 
+    /* Ensure the form container items are aligned */
+    #search-form {
+        display: flex;
+        align-items: center;
+    }
+
+
     .table-container {
+        width: 100%;
         overflow-x: auto;
+        display: flex;
+        justify-content: center;
     }
 
     .table {
         width: 100%;
+        max-width: 800px;
         border-collapse: collapse;
         margin-top: 20px;
     }
 
-    .table th, .table td {
+    .table th,
+    .table td {
         padding: 12px;
         text-align: left;
         border-bottom: 1px solid #ddd;
@@ -172,10 +191,11 @@
     }
 
     .btn-primary:hover {
-        background-color: #442bff;
+        background-color: #333;
+        color: #fff;
     }
 
-    .priority-select {
+    .status-select {
         border: 1px solid #ccc;
         border-radius: 5px;
         padding: 5px;
@@ -204,10 +224,11 @@
         z-index: 1;
         position: relative;
     }
-    .logout:hover {
-        background-color: #442bff;
-    }
 
+    .logout:hover {
+        background-color: #333;
+        color: #fff;
+    }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -238,23 +259,22 @@
 {% block content %}
 <div id="vanta-container"></div>
 <div class="navbar">
-    <ul>
-        <li><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
-        <li class="active"><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
-        {% if user.is_superuser %}
-        <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
-        {% endif %}
-        <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
-    </ul>
+    <li><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
+    <li class="active"><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
+    {% if user.is_superuser %}
+    <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
+    {% endif %}
+    <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
 </div>
 <div class="container">
 {% if user.is_authenticated %}
     <div class="form-container">
         <form id="search-form" class="search_field">
             <input id="search-input" type="text" class="input-search" placeholder="Search" />
-            <button type="submit" class="search-button">Search</button>
-        </form>
-        <button class="retrieve-all-button">Retrieve All Tasks</button>
+            <button id="search-button" type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+              </button>
+        </form> 
         <div class="total-records-indicator">Total: {{ tasks.count }}</div>
     </div>
 
@@ -335,7 +355,6 @@
             </table>
         </div>
     {% endif %}
-    <p><a href="{% url 'logout' %}" class="logout">Log Out</a></p>
 {% else %}
     <p>You are not logged in.</p>
     <a href="{% url 'login' %}">Log In</a> |
