@@ -259,8 +259,7 @@
             <form id="search-form" class="search_field">
                 <input id="search-input" type="text" class="input-search" placeholder="Search" />
                 <button type="submit" class="search-button">Search</button>
-            </form>
-            <button class="retrieve-all-button">Retrieve All Users</button>
+            </form>  
             <div class="total-records-indicator">Total: {{ users.count }}</div>
         </div>
 
@@ -298,23 +297,100 @@
 {% endif %}
 </div>
 <script>
-document.querySelectorAll('.status-select').forEach(select => {
-    select.addEventListener('change', function() {
-        const userId = this.dataset.userId;
-        const isSuperuser = this.value;
-        fetch(`/api/user/${userId}/update_status/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({is_superuser: isSuperuser})
-        }).then(response => {
+    document.addEventListener('DOMContentLoaded', function () {
+        VANTA.FOG({
+            el: "#vanta-container",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            highlightColor: 0xf0f0f0,
+            midtoneColor: 0x9775ca,
+            lowlightColor: 0x442bff,
+            blurFactor: 0.57,
+            speed: 1.40,
+            zoom: 1.40
+        })
+    });
+
+    // Search User Functionality
+    document.getElementById('search-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const searchValue = document.getElementById('search-input').value;
+    console.log(`Searching for: ${searchValue}`);
+
+    fetch(`/todolist/api/user/search/?search_query=${searchValue}`)
+        .then(response => {
+            console.log(response);
             if (!response.ok) {
-                alert('Failed to update user status');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            const tableBody = document.querySelector('.table tbody');
+            tableBody.innerHTML = '';
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.email}</td>
+                    <td>
+                        <select class="status-select" data-user-id="${user.id}">
+                            <option value="True" ${user.is_superuser ? 'selected' : ''}>Admin</option>
+                            <option value="False" ${!user.is_superuser ? 'selected' : ''}>Member</option>
+                        </select>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Reattach event listeners for status update after search
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const userId = this.dataset.userId;
+                    const isSuperuser = this.value;
+                    fetch(`/todolist/api/user/${userId}/update_status/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({is_superuser: isSuperuser})
+                    }).then(response => {
+                        if (!response.ok) {
+                            alert('Failed to update user status');
+                        }
+                    });
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while searching for users.');
+        });
+});
+
+    // Update User Status Functionality
+    document.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const userId = this.dataset.userId;
+            const isSuperuser = this.value;
+            fetch(`/todolist/api/user/${userId}/update_status/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({is_superuser: isSuperuser})
+            }).then(response => {
+                if (!response.ok) {
+                    alert('Failed to update user status');
+                }
+            });
         });
     });
-});
 </script>
+
 {% endblock %}

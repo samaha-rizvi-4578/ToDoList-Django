@@ -44,7 +44,6 @@
         border-radius: 0;
         color: #fff;
         margin: 0;
-        /* padding: 0; */
         text-decoration: none;
         background-color: #9775ca;
         transition: background-color 0.3s;
@@ -57,13 +56,12 @@
     }
 
     .navbar li.active a {
-        background-color: #333;
-        color: #fff;
+        background-color: #442bff;
     }
+
     .container {
         max-width: 800px;
-        margin: 0 auto;
-        margin-top: 20px;
+        margin: 80px auto 20px auto; /* Adjusted to accommodate the fixed navbar */
         padding: 20px;
         background-color: #fff;
         border-radius: 8px;
@@ -240,12 +238,14 @@
 {% block content %}
 <div id="vanta-container"></div>
 <div class="navbar">
-    <li><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
-    <li class="active"><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
-    {% if user.is_superuser %}
-    <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
-    {% endif %}
-    <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
+    <ul>
+        <li><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
+        <li class="active"><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
+        {% if user.is_superuser %}
+        <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
+        {% endif %}
+        <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
+    </ul>
 </div>
 <div class="container">
 {% if user.is_authenticated %}
@@ -327,7 +327,7 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="checkbox" class="status-checkbox" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
+                                <input type="checkbox" class="status-checkbox" data-task-id="{{ task.task_id }}" {% if task.completed %}checked{% endif %}>
                             </td>
                         </tr>
                     {% endfor %}
@@ -344,17 +344,111 @@
 </div>
 
 <script>
+    document.getElementById('search-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const searchValue = document.getElementById('search-input').value;
+        console.log(`Searching for: ${searchValue}`);
+        
+        fetch(`/todolist/api/task/search/?search_query=${searchValue}`)
+            .then(response => {
+                console.log(response); // Log the raw response
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // Attempt to parse JSON
+            })
+            .then(data => {
+                console.log(data); // Log the parsed data
+                const tableBody = document.querySelector('.table tbody');
+                tableBody.innerHTML = '';
+                data.forEach(task => {
+                    const row = document.createElement('tr');
+                    let rowContent = `
+                        <td>${task.task_name}</td>
+                        <td>${task.project_name}</td>
+                        <td>${task.description}</td>
+                        <td>
+                            <select class="priority-select" data-task-id="${task.id}">
+                                <option value="high" ${task.priority == 'high' ? 'selected' : ''}>High</option>
+                                <option value="medium" ${task.priority == 'medium' ? 'selected' : ''}>Medium</option>
+                                <option value="low" ${task.priority == 'low' ? 'selected' : ''}>Low</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="checkbox" class="status-checkbox" data-task-id="${task.id}" ${task.completed ? 'checked' : ''}>
+                            </td>
+                    `;
+                    if (task.is_superuser) { // Check if user is a superuser
+                        rowContent += `
+                        <td>
+                            ${task.assigned_to}
+                            </td>
+                            <td>
+                                <a href="/admin/edit-task/${task.id}/" class="btn btn-primary">Edit Task</a>
+                            </td>
+                        `;
+                    }
+                    row.innerHTML = rowContent;
+                    tableBody.appendChild(row);
+                });
+ // Reattach event listeners to dynamically created elements
+ document.querySelectorAll('.priority-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const taskId = this.dataset.taskId;
+                    const priority = this.value;
+                    fetch(`/todolist/api/task/${taskId}/update_priority/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ priority })
+                    }).then(response => {
+                        if (!response.ok) {
+                            alert('Failed to update priority');
+                        }
+                    });
+                });
+            });
+
+            document.querySelectorAll('.status-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const taskId = this.dataset.taskId;
+                    const completed = this.checked;
+                    fetch(`/todolist/api/task/${taskId}/update_status/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ completed: completed })
+                    }).then(response => {
+                        if (!response.ok) {
+                            alert('Failed to update status');
+                        }
+                    });
+                });
+            });
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while searching for tasks.');
+        });
+});
+
+// Initial event listeners for elements already present in the DOM
 document.querySelectorAll('.priority-select').forEach(select => {
     select.addEventListener('change', function() {
         const taskId = this.dataset.taskId;
         const priority = this.value;
-        fetch(`/api/task/${taskId}/update_priority/`, {
+        fetch(`/todolist/api/task/${taskId}/update_priority/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': '{{ csrf_token }}'
             },
-            body: JSON.stringify({priority})
+            body: JSON.stringify({ priority })
         }).then(response => {
             if (!response.ok) {
                 alert('Failed to update priority');
@@ -367,13 +461,13 @@ document.querySelectorAll('.status-checkbox').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
         const taskId = this.dataset.taskId;
         const completed = this.checked;
-        fetch(`/api/task/${taskId}/update_status/`, {
+        fetch(`/todolist/api/task/${taskId}/update_status/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': '{{ csrf_token }}'
             },
-            body: JSON.stringify({completed})
+            body: JSON.stringify({ completed: completed })
         }).then(response => {
             if (!response.ok) {
                 alert('Failed to update status');
@@ -381,6 +475,8 @@ document.querySelectorAll('.status-checkbox').forEach(checkbox => {
         });
     });
 });
-</script>
+    </script>
+    
+
 
 {% endblock %}
