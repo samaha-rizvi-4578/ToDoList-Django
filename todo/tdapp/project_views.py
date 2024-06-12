@@ -63,6 +63,16 @@ def edit_project_view(request, pk):
         form = EditProjectForm(instance=project)
     return render(request, 'admin/edit-project.html', {'form': form})
 
+#delete project
+@login_required
+def delete_project_view(request, pk):
+    if not request.user.is_superuser:
+        return redirect('home')
+    project = Project.objects.get(pk=pk)
+    project.delete()
+    return redirect('project-list')
+
+
 #search project
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

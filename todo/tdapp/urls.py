@@ -27,11 +27,13 @@ urlpatterns = [
     path('api/task/<int:pk>/update_status/', update_task_status, name='update-task-status'),  # Correct endpoint
     path('tasks/add/', add_task_view, name='add-task'),
     path('tasks/edit/<int:pk>/', edit_task_view, name='edit-task'), 
+    path('tasks/delete/<int:pk>/', delete_task_view, name='delete-task'), 
     path('api/task/search/', search_task, name='search-task'),
     
     # project
     path('projects/', project_list, name='project-list'),
     path('projects/add/', add_project_view, name='add-project'),
     path('projects/edit/<int:pk>/', edit_project_view, name='edit-project'), 
+    path('projects/delete/<int:pk>/', delete_project_view, name='delete-project'), 
     path('api/project/search/', search_project, name='search-project'),
 ]

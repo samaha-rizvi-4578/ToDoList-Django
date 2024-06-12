@@ -298,7 +298,12 @@
                         <tr>
                             <td>{{ project.project_name }}</td>
                             <td>{{ project.description }}</td>
-                            <td><a href="{% url 'edit-project' project.project_id %}" class="btn btn-primary">Edit Project</a></td>
+                            <td class="border-0 align-middle">
+                                <a href="{% url 'edit-project' project.project_id %}" data-mdb-tooltip-init title="Done"><i
+                                    class="fas fa-check fa-lg text-success me-3"></i></a>
+                                <a href="{% url 'delete-project' project.project_id %}" data-mdb-tooltip-init title="Remove"><i
+                                    class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -58,6 +58,16 @@ def edit_task_view(request, pk):
         form = EditTaskForm(instance=task)
     return render(request, 'admin/edit-task.html', {'form': form})
 
+#delete task
+@login_required
+def delete_task_view(request, pk):
+    if not request.user.is_superuser:
+        return redirect('home')
+    task = Task.objects.get(pk=pk)
+    task.delete()
+    return redirect('task-list')
+
+
 #search task 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -68,6 +78,7 @@ def search_task(request):
     serializer = TaskSerializer(tasks, many=True)
     print(f"Tasks found: {serializer.data}")  # Debug statement
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated

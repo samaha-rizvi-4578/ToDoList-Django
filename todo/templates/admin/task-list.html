@@ -313,9 +313,12 @@
                             <td>
                                 <input type="checkbox" class="status-checkbox" data-task-id="{{ task.task_id }}" {% if task.completed %}checked{% endif %}>
                             </td>
-                            <td>
-                                <a href="{% url 'edit-task' task.task_id %}" class="btn btn-primary">Edit Task</a>
-                            </td>
+                            <td class="border-0 align-middle">
+                                <a href="{% url 'edit-task' task.task_id %}" data-mdb-tooltip-init title="Done"><i
+                                    class="fas fa-check fa-lg text-success me-3"></i></a>
+                                <a href="{% url 'delete-task' task.task_id %}" data-mdb-tooltip-init title="Remove"><i
+                                    class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                              </td>
                         </tr>
                     {% endfor %}
                 </tbody>
