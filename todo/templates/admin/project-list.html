@@ -105,7 +105,15 @@
         margin-right: 10px;
         height: 40px;
     }
-
+    .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: transparent;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
     .search-button{
         padding: 0 15px;
         /* Adjust padding to ensure the button's height matches the input's height */
@@ -145,29 +153,39 @@
 
 
     .table-container {
-        width: 100%;
-        overflow-x: auto;
         display: flex;
-        justify-content: center;
+    justify-content: center;
+    margin-top: 20px;
     }
 
     .table {
-        width: 100%;
-        max-width: 800px;
-        border-collapse: collapse;
-        margin-top: 20px;
+        border-radius: 10px;
+    background-color: #fff;
+    width: auto;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    margin-bottom: 50px;
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
     .table th,
     .table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
+        padding: 12px 15px;
+    text-align: left;
+    height: 15px;
     }
 
     .table th {
         background-color: #9775ca;
         color: #fff;
+        font-weight: 500;
+        overflow: hidden;
+    position: sticky;
+    top: 0;
     }
 
     .table tr:nth-child(even) {
@@ -257,10 +275,12 @@
 </script>
 {% endblock %}
 
+
 {% block content %}
-<div id="vanta-container"></div><div class="navbar">
+<div id="vanta-container"></div>
+<div class="navbar">
     <li class="active"><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
-    <li><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
+    <li><a href="{% url 'task-list' %}" class="btn-primary">Tasks</a></li>
     {% if user.is_superuser %}
     <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
     {% endif %}
@@ -274,7 +294,7 @@
             <input id="search-input" type="text" class="input-search" placeholder="Search" />
             <button id="search-button" type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i>
-              </button>
+            </button>
         </form>   
         <div class="total-records-indicator">Total: {{ projects.count }}</div>
     </div>
@@ -295,14 +315,12 @@
                 </thead>
                 <tbody>
                     {% for project in projects %}
-                        <tr>
+                        <tr class="{{ forloop.counter0|divisibleby:2|yesno:'even,odd' }}">
                             <td>{{ project.project_name }}</td>
                             <td>{{ project.description }}</td>
                             <td class="border-0 align-middle">
-                                <a href="{% url 'edit-project' project.project_id %}" data-mdb-tooltip-init title="Done"><i
-                                    class="fas fa-check fa-lg text-success me-3"></i></a>
-                                <a href="{% url 'delete-project' project.project_id %}" data-mdb-tooltip-init title="Remove"><i
-                                    class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                                <a href="{% url 'edit-project' project.project_id %}" data-mdb-tooltip-init title="Edit"><i class="fas fa-edit fa-lg text-success me-3"></i></a>
+                                <a href="{% url 'delete-project' project.project_id %}" data-mdb-tooltip-init title="Delete"><i class="fas fa-trash-alt fa-lg text-warning"></i></a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -320,7 +338,7 @@
                 </thead>
                 <tbody>
                     {% for project in projects %}
-                        <tr>
+                        <tr class="{{ forloop.counter0|divisibleby:2|yesno:'even,odd' }}">
                             <td>{{ project.project_name }}</td>
                             <td>{{ project.description }}</td>
                         </tr>
@@ -336,46 +354,47 @@
 {% endif %}
 </div>
 <script>
-   document.getElementById('search-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const searchValue = document.getElementById('search-input').value;
-    console.log(`Searching for: ${searchValue}`);
-
-    fetch(`/todolist/api/project/search/?search_query=${searchValue}`)
-        .then(response => {
-            console.log(response); // Log the raw response
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json(); // Attempt to parse JSON
-        })
-        .then(data => {
-            console.log(data); // Log the parsed data
-            const tableBody = document.querySelector('.table tbody');
-            tableBody.innerHTML = ''; // Clear previous search results
-            data.forEach(project => { // Corrected variable name from 'task' to 'project'
-                const row = document.createElement('tr');
-                let rowContent = `
-                    <td>${project.project_name}</td>
-                    <td>${project.description}</td>
-                `;
-                if (project.is_superuser) {
-                    rowContent += `
-                        <td>
-                            <a href="/admin/edit-project/${project.project_id}/" class="btn btn-primary">Edit Project</a>
-                        </td>
-                    `;
+    document.getElementById('search-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const searchValue = document.getElementById('search-input').value;
+        console.log(`Searching for: ${searchValue}`);
+    
+        fetch(`/todolist/api/project/search/?search_query=${searchValue}`)
+            .then(response => {
+                console.log(response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                row.innerHTML = rowContent;
-                tableBody.appendChild(row);
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                const tableBody = document.querySelector('.table tbody');
+                tableBody.innerHTML = '';
+                data.forEach((project, index) => {
+                    const row = document.createElement('tr');
+                    row.className = index % 2 === 0 ? 'even' : 'odd';
+                    let rowContent = `
+                        <td>${project.project_name}</td>
+                        <td>${project.description}</td>
+                    `;
+                    if (project.is_superuser) {
+                        rowContent += `
+                            <td class='border-0 align-middle'>
+                                <a href="/projects/edit/${project.project_id}/" data-mdb-tooltip-init title="Edit"><i class="fas fa-edit fa-lg text-success me-3"></i></a>
+                                <a href="/projects/delete/${project.project_id}/" data-mdb-tooltip-init title="Delete"><i class="fas fa-trash-alt fa-lg text-warning"></i></a>
+                            </td>
+                        `;
+                    }
+                    row.innerHTML = rowContent;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while searching for projects.');
             });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while searching for projects.');
-        });
-});
-
-
+    });
 </script>
+
 {% endblock %}

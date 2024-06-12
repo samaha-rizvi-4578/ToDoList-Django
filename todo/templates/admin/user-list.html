@@ -104,7 +104,15 @@
         margin-right: 10px;
         height: 40px;
     }
-
+    .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: transparent;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
     .search-button{
         padding: 0 15px;
         /* Adjust padding to ensure the button's height matches the input's height */
@@ -144,30 +152,39 @@
 
 
     .table-container {
-        width: 100%;
-        overflow-x: auto;
         display: flex;
-        justify-content: center;
+    justify-content: center;
+    margin-top: 20px;
     }
 
     .table {
-        margin-left: 25%;
-        width: 100%;
-        max-width: 800px;
-        border-collapse: collapse;
-        margin-top: 20px;
+        border-radius: 10px;
+    background-color: #fff;
+    width: auto;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    margin-bottom: 50px;
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
     .table th,
     .table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
+        padding: 12px 15px;
+    text-align: left;
+    height: 15px;
     }
 
     .table th {
         background-color: #9775ca;
         color: #fff;
+        font-weight: 500;
+        overflow: hidden;
+    position: sticky;
+    top: 0;
     }
 
     .table tr:nth-child(even) {

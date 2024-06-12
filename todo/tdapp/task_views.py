@@ -1,3 +1,9 @@
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Task
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -79,12 +85,6 @@ def search_task(request):
     print(f"Tasks found: {serializer.data}")  # Debug statement
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Task
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
