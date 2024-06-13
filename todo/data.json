@@ -1,0 +1,124 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "password": "pbkdf2_sha256$390000$sSVm7zJoIiICr23kOgsdZH$3SreUY3R9MP3Q/M+4s4DUywHP4iYC7ETw2HFz1fj7pA=",
+            "last_login": "2024-06-13T07:42:53.075658Z",
+            "is_superuser": true,
+            "first_name": "",
+            "last_name": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2024-06-02T19:04:06.610517Z",
+            "email": "samahabatool7@gmail.com",
+            "groups": [],
+            "user_permissions": [],
+            "projects": []
+        },
+        {
+            "id": 2,
+            "password": "pbkdf2_sha256$390000$u3FD8nOiL7shAJeNRQLhCW$Lh0v1KzPsS/7sHb6TdjZz/wgqWeN0sWm620RW/ji1CI=",
+            "last_login": "2024-06-11T09:14:09.690834Z",
+            "is_superuser": false,
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-06-02T19:11:02.518392Z",
+            "email": "k214578@nu.edu.pk",
+            "groups": [],
+            "user_permissions": [],
+            "projects": [
+                {
+                    "project_id": 3,
+                    "project_name": "CNN Image Classifier",
+                    "description": "build a cnn model to classify images of different airlines",
+                    "tasks": [
+                        {
+                            "task_id": 2,
+                            "task_name": "Collect data",
+                            "description": "make file of various images of airlines to train model",
+                            "priority": "low",
+                            "completed": true,
+                            "project_name": 3,
+                            "assigned_to": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "password": "pbkdf2_sha256$390000$7DYgAQI28Cd3PtX8qXM7qm$j9CtUTxSBvnJ38t5Nn6DkF6UecudUC4t0jI14By3Xqs=",
+            "last_login": "2024-06-13T07:23:05.316219Z",
+            "is_superuser": false,
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-06-12T07:05:52.877342Z",
+            "email": "samaharizvi14@gmail.com",
+            "groups": [],
+            "user_permissions": [],
+            "projects": [
+                {
+                    "project_id": 1,
+                    "project_name": "Genetic Algorithm Visualizer",
+                    "description": "make a visualizer ap for students to see the working of genetics algorithm.",
+                    "tasks": [
+                        {
+                            "task_id": 3,
+                            "task_name": "make frontend",
+                            "description": "design frontend",
+                            "priority": "low",
+                            "completed": false,
+                            "project_name": 1,
+                            "assigned_to": 3
+                        },
+                        {
+                            "task_id": 4,
+                            "task_name": "integrate backend to frontend",
+                            "description": "integrate backend logic of genetic algorithm to frontend so that it can be visualized properly",
+                            "priority": "high",
+                            "completed": false,
+                            "project_name": 1,
+                            "assigned_to": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "password": "pbkdf2_sha256$390000$u3FD8nOiL7shAJeNRQLhCW$Lh0v1KzPsS/7sHb6TdjZz/wgqWeN0sWm620RW/ji1CI=",
+            "last_login": "2024-06-11T09:14:09.690834Z",
+            "is_superuser": false,
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-06-02T19:11:02.518392Z",
+            "email": "zainabrizvi45@gmail.com",
+            "groups": [],
+            "user_permissions": [],
+            "projects": [
+                {
+                    "project_id": 3,
+                    "project_name": "CNN Image Classifier",
+                    "description": "build a cnn model to classify images of different airlines",
+                    "tasks": [
+                        {
+                            "task_id": 5,
+                            "task_name": "Download Json file",
+                            "description": "write method to download json file from internet",
+                            "priority": "low",
+                            "completed": true,
+                            "project_name": 3,
+                            "assigned_to": 2
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

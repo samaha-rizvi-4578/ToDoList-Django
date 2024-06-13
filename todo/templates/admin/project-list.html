@@ -279,6 +279,7 @@
 {% block content %}
 <div id="vanta-container"></div>
 <div class="navbar">
+    <li><a href="{% url 'home' %}" class="btn-primary">Home</a></li>
     <li class="active"><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
     <li><a href="{% url 'task-list' %}" class="btn-primary">Tasks</a></li>
     {% if user.is_superuser %}

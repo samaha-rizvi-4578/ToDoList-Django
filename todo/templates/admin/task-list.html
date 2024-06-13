@@ -287,11 +287,7 @@
 {% block content %}
 <div id="vanta-container"></div>
 <div class="navbar">
-    <div class="navbar-logo">
-        <a href="{% url 'home' %}">
-            <img src="{% static 'path/to/your/logo.png' %}" alt="Logo">
-        </a>
-    </div>
+    <li><a href="{% url 'home' %}" class="btn-primary">Home</a></li>
     <li><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
     <li class="active"><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
     {% if user.is_superuser %}
