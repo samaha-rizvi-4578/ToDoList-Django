@@ -36,4 +36,7 @@ urlpatterns = [
     path('projects/edit/<int:pk>/', edit_project_view, name='edit-project'), 
     path('projects/delete/<int:pk>/', delete_project_view, name='delete-project'), 
     path('api/project/search/', search_project, name='search-project'),
+    
+    #download json
+    path('download-json/', download_json, name='download-json'),
 ]

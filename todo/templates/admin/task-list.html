@@ -247,6 +247,16 @@
         background-color: #333;
         color: #fff;
     }
+    /* Logo styles */
+    .navbar-logo {
+        margin-left: 20px; /* Adjust the margin as needed */
+    }
+
+    .navbar-logo img {
+        width: 30px; /* Adjust the width of the logo */
+        height: auto;
+        cursor: pointer;
+    }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -277,10 +287,16 @@
 {% block content %}
 <div id="vanta-container"></div>
 <div class="navbar">
+    <div class="navbar-logo">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'path/to/your/logo.png' %}" alt="Logo">
+        </a>
+    </div>
     <li><a href="{% url 'project-list' %}" class="btn-primary">Projects</a></li>
     <li class="active"><a href="{% url 'task-list' %}" class="btn-primary" id="">Tasks</a></li>
     {% if user.is_superuser %}
     <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
+    <li><a href="{% url 'download-json' %}" class="btn-primary">Download JSON</a></li>
     {% endif %}
     <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
 </div>

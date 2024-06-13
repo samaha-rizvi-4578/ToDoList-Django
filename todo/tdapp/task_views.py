@@ -85,7 +85,7 @@ def search_task(request):
     print(f"Tasks found: {serializer.data}")  # Debug statement
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+#update priority
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_task_priority(request, pk):
@@ -99,6 +99,7 @@ def update_task_priority(request, pk):
     task.priority = request.data.get('priority')
     task.save()
     return Response(status=status.HTTP_200_OK)
+
 #update status
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

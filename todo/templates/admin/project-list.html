@@ -283,6 +283,7 @@
     <li><a href="{% url 'task-list' %}" class="btn-primary">Tasks</a></li>
     {% if user.is_superuser %}
     <li><a href="{% url 'user-list' %}" class="btn-primary">Users</a></li>
+    <li><a href="{% url 'download-json' %}" class="btn-primary">Download JSON</a></li>
     {% endif %}
     <li><a href="{% url 'logout' %}" class="btn-primary">Log Out</a></li>
 </div>

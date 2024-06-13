@@ -30,7 +30,7 @@ def user_list(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
     return render(request, 'admin/user-list.html', {'users': users})
         
-
+#update user status
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
 def update_user_status(request, pk):
@@ -71,4 +71,3 @@ def search_user(request):
     serializer = UserSerializer(users, many=True)
     print(f"users found: {serializer.data}")  # Debug statement
     return Response(serializer.data, status=status.HTTP_200_OK)
-
